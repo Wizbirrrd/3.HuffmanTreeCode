@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/wizbird/Code/Tree_experiment/build",
+  "command": "/usr/bin/g++    -g   -o CMakeFiles/Huffman.dir/main.cpp.o -c /home/wizbird/Code/Tree_experiment/main.cpp",
+  "file": "/home/wizbird/Code/Tree_experiment/main.cpp"
+}
+]
