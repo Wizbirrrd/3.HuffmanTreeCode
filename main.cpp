@@ -107,51 +107,49 @@ Status WeightInit(char *s, int *w) {
 
 Status HuffmanInit(BiTree &Huffman, int *w) {
   int i = 0;
-  BiTree p = Huffman;
   for (i = 0; i < WEIGHT_ARRAY_LEN; i++) {
     if (w[i] != 0) {
       BiTNode *Node = (BiTNode *)malloc(sizeof(BiTNode));
       if (!Node)
         exit(OVERFLOW);
-      Node->next = p;
-      if (p != Huffman) {
-        p->parent = Node;
-      }
+      Node->next = Huffman->next;
+      Node->parent = Huffman;
+      if (Huffman->next)
+        Huffman->next->parent = Node;
       Huffman->next = Node;
-      p = Node;
-      p->Char = ((i == 0) ? ' ' : 'a' + i - 1);
-      p->weight = w[i];
-      p->parent = Huffman;
+      Node->Char = ((i == 0) ? ' ' : 'a' + i - 1);
+      Node->weight = w[i];
+      Node->parent = Huffman;
     } //根据权值数组构造带权值的循环链表
   }
   return OK;
 }
 
+//沿链表找到权值最小的结点并移出链表,返回该节点的指针
 Status SelectMin(BiTree &Huffman, BiTree &p) {
   BiTree t = Huffman->next;
   p = t;
-  while (t != Huffman) {
+  if (!t->next) {//仅剩一个结点
+    Huffman->next = NULL;
+    return OK;
+  }
+  while (t) {
     if (p->weight >= t->weight) {
       p = t;
     } //等号使链表中靠后的字符先被取到,保证同等权值时较小字符在左子树
     t = t->next;
   }
-  if (p->next->next != p) { //判断链表中是否只剩一个结点
-    p->parent->next = p->next;
-    if (p->next != Huffman) {
-      p->next->parent = p->parent;
-    }
-  } else {
-    Huffman->next = Huffman;
-  }
+  if (p->next)
+    p->next->parent = p->parent;
+  p->parent->next = p->next;
   p->next = NULL;
   return OK;
-} //沿链表找到权值最小的结点并移出链表,返回该节点的指针
+}
 
 Status HuffmanCode(BiTree &Huffman) {
   BiTree p1;
   BiTree p2;
-  while (Huffman->next->next != Huffman) {
+  while (Huffman->next->next) {
     SelectMin(Huffman, p1);
     SelectMin(Huffman, p2);
     BiTree Weight = (BiTree)malloc(sizeof(BiTNode));
@@ -164,7 +162,7 @@ Status HuffmanCode(BiTree &Huffman) {
     p2->parent = Weight;
     Weight->next = Huffman->next;
     Weight->parent = Huffman;
-    if (Huffman->next != Huffman) {
+    if (Huffman->next) {
       Huffman->next->parent = Weight;
     }
     Huffman->next = Weight;
