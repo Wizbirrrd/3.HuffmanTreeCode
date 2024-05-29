@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/home/wizbird/Code/Tree_experiment/main",
-            "args": [" aabbbccccdddddeeeeeefffffffgggggggghhhhhhhhhiiiiiiiiii","1"],
+            "args": ["stupid is as stupid does","1"],
             "stopAtEntry": false, 
             "cwd": "${fileDirname}",
             "environment": [],

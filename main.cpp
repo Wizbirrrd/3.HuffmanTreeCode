@@ -81,7 +81,6 @@ Status LvPush(LvStack &S, int e) {
   *(S.top++) = e;
   return OK;
 }
-
 Status StackDestroy(PtStack &S) {
   free(S.base);
   return OK;
@@ -174,6 +173,7 @@ Status HuffmanCode(BiTree &Huffman) {
   return OK;
 }
 
+//向上寻根,编码
 Status GetCode(BiTree p, CodeNode *Node, int level) {
   int i;
   Node->Char = p->Char;
@@ -234,6 +234,9 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
   return OK;
 }
 
+//向下寻叶,解码
+Status DeCode(BiTree Tree, char *code) { return OK; }
+
 Status HuffmanDestroy(BiTree Huffman) {
   free(Huffman);
   return OK;
@@ -249,7 +252,7 @@ int main(int argc, char **argv) {
   if (!w) {
     exit(OVERFLOW);
   }
-  if (!WeightInit(argv[1], w)) {
+  if (!WeightInit(argv[1], w)) { //构造权值数组
     printf("ERROR_02");
     return ERROR;
   };
@@ -259,21 +262,33 @@ int main(int argc, char **argv) {
   BiTree Huffman =
       (BiTree)malloc(sizeof(BiTNode)); //生成带头节点的链表,方便后续插入操作
   Huffman->next = NULL;
-  HuffmanInit(Huffman, w);
+  HuffmanInit(Huffman, w); //构造叶子结点
   free(w);
-  HuffmanCode(Huffman);
+  HuffmanCode(Huffman); //构造赫夫曼树
 
   CodeTable c = (CodeTable)malloc(sizeof(CodeNode));
   if (!c) {
     exit(OVERFLOW);
   }
   c->next = NULL;
-  BiTreeTraverse(Huffman, c);
-  
+  BiTreeTraverse(Huffman, c); //构造编码表
+
+  char *p = argv[1];
+  CodeTable q;
+  while (*p != '\0') {
+    q = c;
+    while (q->Char != *p) {
+      q = q->next;
+    }
+    printf("%s", q->code);
+    p++;
+  } //输出相应编码
   // while (c) {
   //   printf("\'%c\':%s\n", c->Char, c->code);
   //   c = c->next;
   // } // Traverse调试
+
+  DeCode(Huffman, argv[2]);//输出相应解码
 
   HuffmanDestroy(Huffman);
   free(c);
