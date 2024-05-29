@@ -129,7 +129,7 @@ Status HuffmanInit(BiTree &Huffman, int *w) {
 Status SelectMin(BiTree &Huffman, BiTree &p) {
   BiTree t = Huffman->next;
   p = t;
-  if (!t->next) {//仅剩一个结点
+  if (!t->next) { //仅剩一个结点
     Huffman->next = NULL;
     return OK;
   }
@@ -174,6 +174,22 @@ Status HuffmanCode(BiTree &Huffman) {
   return OK;
 }
 
+Status GetCode(BiTree p, CodeNode *Node, int level) {
+  int i;
+  Node->Char = p->Char;
+  Node->code = (char *)malloc(level * sizeof(char));
+  Node->code[level - 1] = '\0';
+  for (i = level - 2; i >= 0; i--) {
+    if (p->parent->lchild == p)
+      Node->code[i] = '0';
+    else
+      Node->code[i] = '1';
+    p = p->parent;
+  }
+  return 0;
+}
+
+//利用栈实现二叉树先序遍历的非递归算法,同时将字符的编码存入表中
 Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
   PtStack S;
   LvStack L;
@@ -190,7 +206,7 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
         CodeNode *Node = (CodeNode *)malloc(sizeof(CodeNode));
         if (!Node)
           exit(OVERFLOW);
-        Node->Char = p->Char;
+        GetCode(p, Node, level);
         Node->next = c->next;
         c->next = Node;
         degree = 0;
@@ -211,8 +227,12 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
     }
   }
   StackDestroy(S);
+  CodeTable q = c;
+  c = c->next;
+  q->next = NULL;
+  free(q);
   return OK;
-} //利用栈实现二叉树先序遍历的非递归算法
+}
 
 Status HuffmanDestroy(BiTree Huffman) {
   free(Huffman);
@@ -233,11 +253,9 @@ int main(int argc, char **argv) {
     printf("ERROR_02");
     return ERROR;
   };
-
   // for (int i = 0; i < W_ARRAY_LEN; i++) {
   //   cout << w[i] << endl;
   // } //WeightInit调试
-
   BiTree Huffman =
       (BiTree)malloc(sizeof(BiTNode)); //生成带头节点的链表,方便后续插入操作
   Huffman->next = NULL;
@@ -251,6 +269,11 @@ int main(int argc, char **argv) {
   }
   c->next = NULL;
   BiTreeTraverse(Huffman, c);
+  
+  // while (c) {
+  //   printf("\'%c\':%s\n", c->Char, c->code);
+  //   c = c->next;
+  // } // Traverse调试
 
   HuffmanDestroy(Huffman);
   free(c);
