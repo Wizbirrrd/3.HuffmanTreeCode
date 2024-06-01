@@ -173,7 +173,7 @@ Status HuffmanCode(BiTree &Huffman) {
   return OK;
 }
 
-//向上寻根,编码
+//向上寻根,生成编码表
 Status GetCode(BiTree p, CodeNode *Node, int level) {
   int i;
   Node->Char = p->Char;
@@ -198,11 +198,11 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
   BiTree p = Tree;
   int level = 1;
   int degree = 0;
-  printf("字符\t权值\t  度\t层数\n");
+  //printf("字符\t权值\t  度\t层数\n");
   while (p || !EmptyStack(S)) {
     if (p) {
       if (p->Char) {
-        printf("\'%c\'", p->Char);
+        //printf("\'%c\'", p->Char);
         CodeNode *Node = (CodeNode *)malloc(sizeof(CodeNode));
         if (!Node)
           exit(OVERFLOW);
@@ -211,12 +211,12 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
         c->next = Node;
         degree = 0;
       } else {
-        printf("   ");
+        //printf("   ");
         degree = 2;
       }
-      printf("%8d", p->weight);
-      printf("%8d", degree);
-      printf("%8d\n", level);
+      // printf("%8d", p->weight);
+      // printf("%8d", degree);
+      // printf("%8d\n", level);
       PtPush(S, p->rchild);
       level++;
       LvPush(L, level);
@@ -231,6 +231,21 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
   c = c->next;
   q->next = NULL;
   free(q);
+  return OK;
+}
+
+//根据编码表编码
+Status AdCode(CodeTable c, char *string) {
+  CodeTable p;
+  while (*string != '\0') {
+    p = c;
+    while (p->Char != *string) {
+      p = p->next;
+    }
+    printf("%s", p->code);
+    string++;
+  }
+
   return OK;
 }
 
@@ -272,23 +287,12 @@ int main(int argc, char **argv) {
   }
   c->next = NULL;
   BiTreeTraverse(Huffman, c); //构造编码表
-
-  char *p = argv[1];
-  CodeTable q;
-  while (*p != '\0') {
-    q = c;
-    while (q->Char != *p) {
-      q = q->next;
-    }
-    printf("%s", q->code);
-    p++;
-  } //输出相应编码
   // while (c) {
   //   printf("\'%c\':%s\n", c->Char, c->code);
   //   c = c->next;
   // } // Traverse调试
-
-  DeCode(Huffman, argv[2]);//输出相应解码
+  AdCode(c, argv[1]);       //根据编码表解码
+  DeCode(Huffman, argv[2]); //输出相应解码
 
   HuffmanDestroy(Huffman);
   free(c);

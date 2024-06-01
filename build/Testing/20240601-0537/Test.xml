@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Site BuildName="Linux-g++"
-	BuildStamp="20240529-0820-Experimental"
+	BuildStamp="20240601-0537-Experimental"
 	Name="whbs-omen"
 	Generator="ctest-3.16.3"
 	CompilerName="/usr/bin/g++"
@@ -19,16 +19,16 @@
 	NumberOfLogicalCPU="24"
 	NumberOfPhysicalCPU="16"
 	TotalVirtualMemory="9535"
-	TotalPhysicalMemory="15680"
+	TotalPhysicalMemory="13664"
 	LogicalProcessorsPerPhysical="1"
-	ProcessorClockFrequency="2300"
+	ProcessorClockFrequency="3350.08"
 	>
 	<Testing>
-		<StartDateTime>May 29 20:41 CST</StartDateTime>
-		<StartTestTime>1716986464</StartTestTime>
+		<StartDateTime>Jun 01 13:42 CST</StartDateTime>
+		<StartTestTime>1717220577</StartTestTime>
 		<TestList/>
-		<EndDateTime>May 29 20:41 CST</EndDateTime>
-		<EndTestTime>1716986464</EndTestTime>
+		<EndDateTime>Jun 01 13:42 CST</EndDateTime>
+		<EndTestTime>1717220577</EndTestTime>
 		<ElapsedMinutes>0</ElapsedMinutes>
 	</Testing>
 </Site>
