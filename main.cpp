@@ -198,11 +198,11 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
   BiTree p = Tree;
   int level = 1;
   int degree = 0;
-  //printf("字符\t权值\t  度\t层数\n");
+  printf("字符\t权值\t  度\t层数\n");
   while (p || !EmptyStack(S)) {
     if (p) {
       if (p->Char) {
-        //printf("\'%c\'", p->Char);
+        printf("\'%c\'", p->Char);
         CodeNode *Node = (CodeNode *)malloc(sizeof(CodeNode));
         if (!Node)
           exit(OVERFLOW);
@@ -211,12 +211,12 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
         c->next = Node;
         degree = 0;
       } else {
-        //printf("   ");
+        printf("   ");
         degree = 2;
       }
-      // printf("%8d", p->weight);
-      // printf("%8d", degree);
-      // printf("%8d\n", level);
+      printf("%8d", p->weight);
+      printf("%8d", degree);
+      printf("%8d\n", level);
       PtPush(S, p->rchild);
       level++;
       LvPush(L, level);
@@ -245,12 +245,53 @@ Status AdCode(CodeTable c, char *string) {
     printf("%s", p->code);
     string++;
   }
+  printf(" ");
+  return OK;
+}
 
+//二进制编码合法性检检测
+Status CodeCheck(BiTree Tree, char *code) {
+  BiTree p = Tree;
+  char *c = code;
+  while (*c) {
+    if (*c == '0') {
+      p = p->lchild;
+    } else if (*c == '1') {
+      p = p->rchild;
+    } else {
+      printf("ERROR_03");
+      return ERROR;
+    }
+    if (p->Char != '\0') {
+      p = Tree;
+    }
+    c++;
+  }
+  if (p != Tree) {
+    printf("ERROR_03");
+    return ERROR;
+  }
   return OK;
 }
 
 //向下寻叶,解码
-Status DeCode(BiTree Tree, char *code) { return OK; }
+Status DeCode(BiTree Tree, char *code) {
+  BiTree p = Tree;
+  char *c = code;
+  while (*c) {
+    if (*c == '0') {
+      p = p->lchild;
+    } else {
+      p = p->rchild;
+    }
+    if (p->Char != '\0') {
+      printf("%c", p->Char);
+      p = Tree;
+    }
+    c++;
+  }
+  return OK;
+}
 
 Status HuffmanDestroy(BiTree Huffman) {
   free(Huffman);
@@ -269,15 +310,13 @@ int main(int argc, char **argv) {
   }
   if (!WeightInit(argv[1], w)) { //构造权值数组
     printf("ERROR_02");
+    free(w);
     return ERROR;
   };
-  // for (int i = 0; i < W_ARRAY_LEN; i++) {
-  //   cout << w[i] << endl;
-  // } //WeightInit调试
   BiTree Huffman =
       (BiTree)malloc(sizeof(BiTNode)); //生成带头节点的链表,方便后续插入操作
   Huffman->next = NULL;
-  HuffmanInit(Huffman, w); //构造叶子结点
+  HuffmanInit(Huffman, w); //生成叶子结点
   free(w);
   HuffmanCode(Huffman); //构造赫夫曼树
 
@@ -286,15 +325,14 @@ int main(int argc, char **argv) {
     exit(OVERFLOW);
   }
   c->next = NULL;
-  BiTreeTraverse(Huffman, c); //构造编码表
-  // while (c) {
-  //   printf("\'%c\':%s\n", c->Char, c->code);
-  //   c = c->next;
-  // } // Traverse调试
-  AdCode(c, argv[1]);       //根据编码表解码
-  DeCode(Huffman, argv[2]); //输出相应解码
+  BiTreeTraverse(Huffman, c);
+  if(!CodeCheck(Huffman, argv[2])){
+    return ERROR;
+  }
+  AdCode(c, argv[1]);
+  DeCode(Huffman, argv[2]);
 
   HuffmanDestroy(Huffman);
-  free(c);
+  free(c); //释放内存
   return OK;
 }
