@@ -198,11 +198,11 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
   BiTree p = Tree;
   int level = 1;
   int degree = 0;
-  printf("字符\t权值\t  度\t层数\n");
+  // printf("字符\t权值\t  度\t层数\n");
   while (p || !EmptyStack(S)) {
     if (p) {
       if (p->Char) {
-        printf("\'%c\'", p->Char);
+        // printf("\'%c\'", p->Char);
         CodeNode *Node = (CodeNode *)malloc(sizeof(CodeNode));
         if (!Node)
           exit(OVERFLOW);
@@ -211,12 +211,12 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
         c->next = Node;
         degree = 0;
       } else {
-        printf("   ");
+        // printf("   ");
         degree = 2;
       }
-      printf("%8d", p->weight);
-      printf("%8d", degree);
-      printf("%8d\n", level);
+      // printf("%8d", p->weight);
+      // printf("%8d", degree);
+      // printf("%8d\n", level);
       PtPush(S, p->rchild);
       level++;
       LvPush(L, level);
