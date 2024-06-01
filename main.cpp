@@ -119,6 +119,8 @@ Status HuffmanInit(BiTree &Huffman, int *w) {
       Node->Char = ((i == 0) ? ' ' : 'a' + i - 1);
       Node->weight = w[i];
       Node->parent = Huffman;
+      Node->lchild = NULL;
+      Node->rchild = NULL;
     } //根据权值数组构造带权值的循环链表
   }
   return OK;
@@ -304,20 +306,15 @@ int main(int argc, char **argv) {
     return ERROR;
   } //命令行参数检查
 
-  int *w = (int *)malloc(WEIGHT_ARRAY_LEN * sizeof(int));
-  if (!w) {
-    exit(OVERFLOW);
-  }
+  int w[WEIGHT_ARRAY_LEN] = {0};
   if (!WeightInit(argv[1], w)) { //构造权值数组
     printf("ERROR_02");
-    free(w);
     return ERROR;
   };
   BiTree Huffman =
       (BiTree)malloc(sizeof(BiTNode)); //生成带头节点的链表,方便后续插入操作
   Huffman->next = NULL;
   HuffmanInit(Huffman, w); //生成叶子结点
-  free(w);
   HuffmanCode(Huffman); //构造赫夫曼树
 
   CodeTable c = (CodeTable)malloc(sizeof(CodeNode));
