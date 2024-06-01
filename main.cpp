@@ -173,7 +173,7 @@ Status HuffmanCode(BiTree &Huffman) {
   return OK;
 }
 
-//向上寻根,编码
+//向上寻根,生成编码表
 Status GetCode(BiTree p, CodeNode *Node, int level) {
   int i;
   Node->Char = p->Char;
@@ -234,8 +234,64 @@ Status BiTreeTraverse(BiTree Tree, CodeTable &c) {
   return OK;
 }
 
+//根据编码表编码
+Status AdCode(CodeTable c, char *string) {
+  CodeTable p;
+  while (*string != '\0') {
+    p = c;
+    while (p->Char != *string) {
+      p = p->next;
+    }
+    printf("%s", p->code);
+    string++;
+  }
+  printf(" ");
+  return OK;
+}
+
+//二进制编码合法性检检测
+Status CodeCheck(BiTree Tree, char *code) {
+  BiTree p = Tree;
+  char *c = code;
+  while (*c) {
+    if (*c == '0') {
+      p = p->lchild;
+    } else if (*c == '1') {
+      p = p->rchild;
+    } else {
+      printf("ERROR_03");
+      return ERROR;
+    }
+    if (p->Char != '\0') {
+      p = Tree;
+    }
+    c++;
+  }
+  if (p != Tree) {
+    printf("ERROR_03");
+    return ERROR;
+  }
+  return OK;
+}
+
 //向下寻叶,解码
-Status DeCode(BiTree Tree, char *code) { return OK; }
+Status DeCode(BiTree Tree, char *code) {
+  BiTree p = Tree;
+  char *c = code;
+  while (*c) {
+    if (*c == '0') {
+      p = p->lchild;
+    } else {
+      p = p->rchild;
+    }
+    if (p->Char != '\0') {
+      printf("%c", p->Char);
+      p = Tree;
+    }
+    c++;
+  }
+  return OK;
+}
 
 Status HuffmanDestroy(BiTree Huffman) {
   free(Huffman);
@@ -254,15 +310,13 @@ int main(int argc, char **argv) {
   }
   if (!WeightInit(argv[1], w)) { //构造权值数组
     printf("ERROR_02");
+    free(w);
     return ERROR;
   };
-  // for (int i = 0; i < W_ARRAY_LEN; i++) {
-  //   cout << w[i] << endl;
-  // } //WeightInit调试
   BiTree Huffman =
       (BiTree)malloc(sizeof(BiTNode)); //生成带头节点的链表,方便后续插入操作
   Huffman->next = NULL;
-  HuffmanInit(Huffman, w); //构造叶子结点
+  HuffmanInit(Huffman, w); //生成叶子结点
   free(w);
   HuffmanCode(Huffman); //构造赫夫曼树
 
@@ -271,26 +325,14 @@ int main(int argc, char **argv) {
     exit(OVERFLOW);
   }
   c->next = NULL;
-  BiTreeTraverse(Huffman, c); //构造编码表
-
-  char *p = argv[1];
-  CodeTable q;
-  while (*p != '\0') {
-    q = c;
-    while (q->Char != *p) {
-      q = q->next;
-    }
-    printf("%s", q->code);
-    p++;
-  } //输出相应编码
-  // while (c) {
-  //   printf("\'%c\':%s\n", c->Char, c->code);
-  //   c = c->next;
-  // } // Traverse调试
-
-  DeCode(Huffman, argv[2]);//输出相应解码
+  BiTreeTraverse(Huffman, c);
+  if(!CodeCheck(Huffman, argv[2])){
+    return ERROR;
+  }
+  AdCode(c, argv[1]);
+  DeCode(Huffman, argv[2]);
 
   HuffmanDestroy(Huffman);
-  free(c);
+  free(c); //释放内存
   return OK;
 }
