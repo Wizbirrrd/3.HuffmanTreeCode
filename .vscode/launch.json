@@ -8,7 +8,7 @@
             "name": "(gdb) 启动",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/home/wizbird/Code/Tree_experiment/main",
+            "program": "/home/wizbird/Code/3.Tree_experiment/main",
             "args": ["stupid is as stupid does","101101001110"],
             "stopAtEntry": false, 
             "cwd": "${fileDirname}",
