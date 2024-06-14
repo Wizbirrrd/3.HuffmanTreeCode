@@ -154,6 +154,9 @@ Status HuffmanCode(BiTree &Huffman) {
     SelectMin(Huffman, p1);
     SelectMin(Huffman, p2);
     BiTree Weight = (BiTree)malloc(sizeof(BiTNode));
+    if(!Weight){
+      exit(OVERFLOW);
+    }
     Weight->next = NULL;
     Weight->Char = '\0';
     Weight->weight = p1->weight + p2->weight;
@@ -180,6 +183,9 @@ Status GetCode(BiTree p, CodeNode *Node, int level) {
   int i;
   Node->Char = p->Char;
   Node->code = (char *)malloc(level * sizeof(char));
+  if(!Node->code){
+    exit(OVERFLOW);
+  }
   Node->code[level - 1] = '\0';
   for (i = level - 2; i >= 0; i--) {
     if (p->parent->lchild == p)
@@ -313,6 +319,9 @@ int main(int argc, char **argv) {
   };
   BiTree Huffman =
       (BiTree)malloc(sizeof(BiTNode)); //生成带头节点的链表,方便后续插入操作
+  if(!Huffman){
+    exit(OVERFLOW);
+  }
   Huffman->next = NULL;
   HuffmanInit(Huffman, w); //生成叶子结点
   HuffmanCode(Huffman); //构造赫夫曼树
